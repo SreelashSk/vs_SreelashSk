@@ -1,85 +1,147 @@
 package edu.disease.asn2;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.UUID;
 
 import edu.disease.asn1.Exposure;
 
+/**
+ * Represents a patient class.
+ */
 public class Patient implements Comparable<Patient> {
-	private String firstName;
-	private String lastName;
+	UUID patientId;
+	String firstName;
+	String lastName;
 	Exposure[] exposures;
 	UUID[] diseaseIds;
-	UUID patientId;
 
-	int maxDiseases;
-	int maxExposures;
+	int maxDiseases, maxExposures;
 
-	int index = 0;
+	int index1, index2 = 0;
 
+	/**
+	 * Constructs a Patient Object
+	 *
+	 * @param maxDiseases  The maximum number of diseases this patient can be
+	 *                     associated with.
+	 * @param maxExposures The maximum number of exposures this patient can have.
+	 * @throws IllegalArgumentException if maxDiseases or maxExposures cannot be
+	 *                                  used to initiate arrays.
+	 */
 	public Patient(int maxDiseases, int maxExposures) {
-		this.maxDiseases = maxDiseases;
-		this.maxExposures = maxExposures;
-
+		if (0 < maxDiseases && 0 < maxExposures) {
+			this.maxDiseases = maxDiseases;
+			this.maxExposures = maxExposures;
+			diseaseIds = new UUID[maxDiseases];
+			exposures = new Exposure[maxExposures];
+		} else {
+			throw new IllegalArgumentException();
+		}
 	}
 
+	/**
+	 * Adds a diseaseId.
+	 *
+	 * @param diseaseId The UUID of the disease to add.
+	 * @throws IndexOutOfBoundsException if there is no space to add more
+	 *                                   diseaseIds.
+	 */
 	void addDiseaseId(UUID diseaseId) {
-		if (index < maxDiseases) {
-			diseaseIds[index++] = diseaseId;
+		if (index1 < maxDiseases) {
+			diseaseIds[index1++] = diseaseId;
 		} else {
-			throw new IndexOutOfBoundsException("diseaseIds array is full!!!");
+			throw new IndexOutOfBoundsException("No Space!!");
 		}
-
 	}
 
+	/**
+	 * Adds an exposure.
+	 *
+	 * @param exposure The exposure to add.
+	 * @throws IndexOutOfBoundsException if there is no space to add more exposures.
+	 */
 	void addExposure(Exposure exposure) {
-		if (index < maxExposures) {
-			exposures[index++] = exposure;
+		if (index2 < maxExposures) {
+			exposures[index2++] = exposure;
 		} else {
-			throw new IndexOutOfBoundsException("exposures array has reached its maximum capacity!!!");
+			throw new IndexOutOfBoundsException("No Space!!");
 		}
 	}
 
+	/**
+	 * Gets the patientId.
+	 *
+	 * @return The patientId.
+	 */
+	public UUID getPatientId() {
+		return patientId;
+	}
+
+	/**
+	 * Sets the patientId.
+	 *
+	 * @param patientId The UUID to set for the patient.
+	 */
+	public void setPatientId(UUID patientId) {
+		this.patientId = patientId;
+	}
+
+	/**
+	 * Gets the patient's first name.
+	 *
+	 * @return The patient's first name.
+	 */
 	public String getFirstName() {
 		return firstName;
 	}
 
+	/**
+	 * Sets the patient's first name.
+	 *
+	 * @param firstName The first name to set for the patient.
+	 */
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
 
+	/**
+	 * Gets the patient's last name.
+	 *
+	 * @return The patient's last name.
+	 */
 	public String getLastName() {
 		return lastName;
 	}
 
+	/**
+	 * Sets the patient's last name.
+	 *
+	 * @param lastName The last name to set for the patient.
+	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
 
-	public Exposure[] getExposures() {
-		return exposures;
-	}
-
-	public void setExposures(Exposure[] exposures) {
-		this.exposures = exposures;
-	}
-
-	public UUID[] getDiseaseIds() {
-		return diseaseIds;
-	}
-
-	public void setDiseaseIds(UUID[] diseaseIds) {
-		this.diseaseIds = diseaseIds;
-	}
-
+	/**
+	 * hash code is the Unique Integer number, which is calculated based on the
+	 * address of the Object Generates a hash code for the Patient object based on
+	 * patientId.
+	 *
+	 * @return The hash code.
+	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((patientId == null) ? 0 : patientId.hashCode());
-		return result;
+		return Objects.hash(patientId);
 	}
 
+	/**
+	 * equals() is used to compare the address of the Object. If the address's are
+	 * equal it returns true, else it returns false
+	 * 
+	 * @param obj The object to compare.
+	 * @return true if the objects are equal, or else return false.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -89,27 +151,31 @@ public class Patient implements Comparable<Patient> {
 		if (getClass() != obj.getClass())
 			return false;
 		Patient other = (Patient) obj;
-		if (patientId == null) {
-			if (other.patientId != null)
-				return false;
-		} else if (!patientId.equals(other.patientId))
-			return false;
-		return true;
+		return Objects.equals(patientId, other.patientId);
 	}
 
+	/**
+	 * Returns a string representation of the Patient object.
+	 *
+	 * @return The string representation.
+	 */
 	@Override
 	public String toString() {
-		return "Patient [firstName=" + firstName + ", lastName=" + lastName + ", exposures="
-				+ Arrays.toString(exposures) + ", diseaseIds=" + Arrays.toString(diseaseIds) + "]";
+		return "Patient [patientId=" + patientId + ", firstName=" + firstName + ", lastName=" + lastName
+				+ ", exposures=" + Arrays.toString(exposures) + ", diseaseIds=" + Arrays.toString(diseaseIds)
+				+ ", maxDiseases=" + maxDiseases + ", maxExposures=" + maxExposures + ", index1=" + index1 + ", index2="
+				+ index2 + "]";
 	}
 
+	/**
+     * Compares this Patient object with another Patient object for sorting purposes.
+     */
 	@Override
 	public int compareTo(Patient p) {
-		int same = this.lastName.compareToIgnoreCase(p.lastName);
-		if (same != 0) {
-			return same;
+		if (p.lastName.compareToIgnoreCase(this.lastName) != 0) {
+			return p.lastName.compareToIgnoreCase(this.lastName);
 		} else
-			return this.firstName.compareToIgnoreCase(p.firstName);
+			return p.firstName.compareToIgnoreCase(this.firstName);
 	}
 
 }
